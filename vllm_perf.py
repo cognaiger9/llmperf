@@ -67,8 +67,8 @@ def static_batch_measurer(prompt, args):
             )
         prompt_token_ids = tokenizer.encode(prompt)
         for _ in range(args.batch_size):
-            llm._add_request(
-                prompt=None,
+            llm.generate(
+                prompts= None,
                 prompt_token_ids=prompt_token_ids,
                 sampling_params=sampling_params,
                 )
