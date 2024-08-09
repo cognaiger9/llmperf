@@ -1,0 +1,1 @@
+python llmperf.py static_batch_throughput --prompt_file input_examples/prompts.txt --iterations 10 --output_tokens 128 vllm --model Qwen/Qwen2-0.5B --dtype float16

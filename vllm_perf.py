@@ -8,14 +8,14 @@ def ttft_measurer(prompt, args):
     llm = LLM(
         model=args.model,
         trust_remote_code=True,
-        dtype=args.dtype,
+        dtype=args.dtype
     )
     tokenizer = llm.get_tokenizer()
     def single_request():
         sampling_params = SamplingParams(
                 temperature=0.0,
                 ignore_eos=True,
-                max_tokens=1,
+                max_tokens=args.output_tokens,
             )
         prompt_token_ids = tokenizer.encode(prompt)
         llm._add_request(
@@ -52,31 +52,32 @@ def tpot_measurer(prompt, args):
         return (timer() - start) / (i - 1)
     return single_request
 
-def static_batch_measurer(prompt, args):
+def static_batch_measurer(prompts, args):
     llm = LLM(
         model=args.model,
         trust_remote_code=True,
         dtype=args.dtype,
+        max_model_len=128
     )
     tokenizer = llm.get_tokenizer()
     def single_request():
         sampling_params = SamplingParams(
                 temperature=0.0,
                 ignore_eos=True,
-                max_tokens=args.output_tokens,
+                max_tokens=128,
             )
-        prompt_token_ids = tokenizer.encode(prompt)
-        for _ in range(args.batch_size):
-            llm.generate(
-                prompts= None,
-                prompt_token_ids=prompt_token_ids,
-                sampling_params=sampling_params,
-                )
-        start = timer()
+        #prompt_token_ids = tokenizer.encode(prompts)
+        llm.generate(
+            prompts= prompts,
+            #prompt_token_ids=prompt_token_ids,
+            sampling_params=sampling_params,
+            )
+        #start = timer()
         llm._run_engine(use_tqdm=True)
-        total_time = timer() - start
-        tokens_count = args.batch_size * args.output_tokens
-        return tokens_count / total_time
+        return 0
+        #total_time = timer() - start
+        #tokens_count = args.batch_size * args.output_tokens
+        #return tokens_count / total_time
     return single_request
 
 def rate_throughput_measurer(prompt, args):
