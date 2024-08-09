@@ -13,7 +13,7 @@ def ttft_measurer(prompt, args):
     tokenizer = llm.get_tokenizer()
     def single_request():
         sampling_params = SamplingParams(
-                temperature=0.0,
+                temperature=0.8,
                 ignore_eos=True,
                 max_tokens=args.output_tokens,
             )
@@ -38,7 +38,7 @@ def tpot_measurer(prompt, args):
 
     async def single_request():
         sampling_params = SamplingParams(
-                temperature=0.0,
+                temperature=0.8,
                 ignore_eos=True,
                 max_tokens=args.output_tokens,
             )
@@ -59,10 +59,10 @@ def static_batch_measurer(prompts, args):
         dtype=args.dtype,
         max_model_len=128
     )
-    
+
     def single_request():
         sampling_params = SamplingParams(
-                temperature=0.0,
+                temperature=0.8,
                 ignore_eos=True,
                 max_tokens=128,
             )
@@ -83,7 +83,7 @@ def rate_throughput_measurer(prompt, args):
 
     async def single_request():
         sampling_params = SamplingParams(
-                temperature=0.0,
+                temperature=0.8,
                 ignore_eos=True,
                 max_tokens=args.output_tokens,
             )
