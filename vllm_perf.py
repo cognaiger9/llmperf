@@ -59,17 +59,15 @@ def static_batch_measurer(prompts, args):
         dtype=args.dtype,
         max_model_len=128
     )
-    tokenizer = llm.get_tokenizer()
+    
     def single_request():
         sampling_params = SamplingParams(
                 temperature=0.0,
                 ignore_eos=True,
                 max_tokens=128,
             )
-        #prompt_token_ids = tokenizer.encode(prompts)
         llm.generate(
             prompts= prompts,
-            #prompt_token_ids=prompt_token_ids,
             sampling_params=sampling_params,
             )
         #start = timer()
