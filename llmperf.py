@@ -1,6 +1,4 @@
 import argparse
-import openai_perf
-import tgi_perf
 import vllm_perf
 import asyncio
 import math
@@ -61,8 +59,6 @@ def run_ttft(args):
     measurer = None
     if args.engine == "vllm":
         measurer = vllm_perf.ttft_measurer(prompt, args)
-    #elif args.engine == "triton":
-    #    measurer = triton_perf.ttft_measurer(prompt, args)
     else:
         print(f"TTFT test not implemented for {args.engine}")
         return
@@ -73,8 +69,6 @@ def run_tpot(args):
     measurer = None
     if args.engine == "vllm":
         measurer = vllm_perf.tpot_measurer(prompt, args)
-    #elif args.engine == "triton":
-    #    measurer = triton_perf.tpot_measurer(prompt, args)
     else:
         print(f"TPOT test not implemented for {args.engine}")
         return
@@ -83,8 +77,9 @@ def run_tpot(args):
 def run_static_batch(args):
     prompts = read_prompt_from_file(args.prompt_file)
     measurer = None
+    log_file = "vllm_output.log"
     if args.engine == "vllm":
-        measurer = vllm_perf.static_batch_measurer(prompts, args)
+        measurer = vllm_perf.static_batch_measurer(prompts, args, log_file)
     else:
         print(f"Static batch test not implemented for {args.engine}")
         return
@@ -95,8 +90,6 @@ def run_rate_throughput(args):
     measurer = None
     if args.engine == "vllm":
         measurer = vllm_perf.rate_throughput_measurer(prompt, args)
-    #elif args.engine == "triton":
-    #    measurer = triton_perf.rate_throughput_measurer(prompt, args)
     else:
         print(f"Rate throughput test not implemented for {args.engine}")
         return
@@ -111,8 +104,6 @@ def run_rate_sampled_throughput(args):
     measurer = None
     if args.engine == "vllm":
         measurer = vllm_perf.sample_rate_throughput_measurer(args)
-    #elif args.engine == "triton":
-    #    measurer = triton_perf.sample_rate_throughput_measurer(args)
     else:
         print(f"Rate sampled throughput test not implemented for {args.engine}")
         return
@@ -146,10 +137,6 @@ def add_engines_parser(base_parser, vllm_batch_size = False):
     if vllm_batch_size:
         vllm_parser.add_argument("--batch_size", type=int, default=128, help="The batch size.")
 
-    #triton_parser = engine_parser.add_parser("triton", help="Triton Engine")
-    #triton_parser.add_argument("--model", type=str, default="ensemble", help="The model.")
-    #triton_parser.add_argument("--http_server", type=str, default="http://localhost:8000", help="The Triton Server URL")
-    #triton_parser.add_argument("--grpc_server", type=str, default="localhost:8001", help="The Triton gRPC Server URL")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="LLMPerf tools to measure LLM performance")
